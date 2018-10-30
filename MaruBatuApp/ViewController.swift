@@ -55,7 +55,7 @@ class ViewController: UIViewController {
     
     //問題を表示します。
     //正解であれば次の問題が、不正解であれば同じ問題が再表示されます。
-    func showQuestion(){
+    func showQuestion() {
         
         let questionDict = questionArray[currentQuestionNum]
         
