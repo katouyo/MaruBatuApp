@@ -16,33 +16,61 @@ class ViewController: UIViewController {
     var currentQuestionNum: Int = 0
     
     //問題
-    let questionDict: [[String:Any]] = [
+    var questionArray: [[String:Any]] = []
+
+/*
+    //問題
+    let questionArray: [[String:Any]] = [
         ["question":"iPhoneアプリの開発統合環境はZcodeである", "answer":false],
         ["question":"Xcode画面の右側にはユーティリティーズがある", "answer":true],
         ["question":"UILabelは文字列を表示する時に利用する", "answer":true]
     ]
-    
+*/
+
     //正解数カウント
     //var okCount: Int = 0
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        //読み込み
+        if UserDefaults.standard.object(forKey: "hoge") != nil {
+            questionArray = UserDefaults.standard.object(forKey: "hoge") as! [[String:Any]]
+        }
+        
+        //配列が空
+        if questionArray.isEmpty {
+            questionLabel.text = "問題がありません。問題を作りましょう！"
+        }
+        else {
+            showQuestion()
+        }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        loadView()
+        viewDidLoad()
+        navigationController?.setNavigationBarHidden(true, animated: false)
+    }
     
     //問題を表示します。
     //正解であれば次の問題が、不正解であれば同じ問題が再表示されます。
     func showQuestion(){
         
-        let question = questionDict[currentQuestionNum]
+        let questionDict = questionArray[currentQuestionNum]
         
         //型判定
-        if let que = question["question"] as? String {
+        if let que = questionDict["question"] as? String {
             questionLabel.text = que
         }
     }
     
-    func checkAnswer(yourAnswer:Bool){
+    func checkAnswer(yourAnswer: Bool){
         
-        let question = questionDict[currentQuestionNum]
+        let questionDict = questionArray[currentQuestionNum]
         
         //型判定
-        if let ans = question["answer"] as? Bool {
+        if let ans = questionDict["answer"] as? Bool {
             
             //答えが合っている
             if yourAnswer == ans {
@@ -58,7 +86,7 @@ class ViewController: UIViewController {
         }
         
         //問題数判定
-        if currentQuestionNum >= questionDict.count {
+        if currentQuestionNum >= questionArray.count {
             //showAlert(messageH: "正解数は\(okCount)問です")
             currentQuestionNum = 0
         }
@@ -79,17 +107,16 @@ class ViewController: UIViewController {
         present(alert, animated: true, completion: nil)
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        showQuestion()
-    }
-
     @IBAction func yesButton(_ sender: Any) {
-        checkAnswer(yourAnswer: true)
+        if !(questionArray.isEmpty) {
+            checkAnswer(yourAnswer: true)
+        }
     }
     
     @IBAction func noButton(_ sender: Any) {
-        checkAnswer(yourAnswer: false)
+        if !(questionArray.isEmpty) {
+            checkAnswer(yourAnswer: false)
+        }
     }
 }
 
